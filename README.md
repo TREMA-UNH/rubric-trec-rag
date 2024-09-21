@@ -1,1 +1,0 @@
-# rubric-trec-rag
