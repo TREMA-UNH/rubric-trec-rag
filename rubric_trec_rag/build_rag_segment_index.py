@@ -25,4 +25,7 @@ if __name__ == "__main__":
 
     args = parser.parse_args()  
     
+    segment_files_str = "\n".join([p.name for p in args.rag_corpus])  #info
+    print(f'Indexing RAG corpus from segment files: \n {segment_files_str}')
     segment_index.build_segment_index(out=args.out, inputs=args.rag_corpus)
+    print(f"DuckDB index written to {args.out}")

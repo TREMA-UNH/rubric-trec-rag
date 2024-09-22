@@ -18,6 +18,7 @@ def read_rag_run_file(run_in_files:List[Path]) ->Iterator[ParagraphRankingEntry]
     # run_entries:List[ParagraphRankingEntry] = list()
 
     for run_in_file in run_in_files:
+        print(f"Loading retrieval run from {run_in_file}")
         with open(run_in_file, 'rt') as file:
             for line in file.readlines():
                 splits = line.split(" ")
@@ -27,10 +28,8 @@ def read_rag_run_file(run_in_files:List[Path]) ->Iterator[ParagraphRankingEntry]
                 else:
                     raise RuntimeError(f"All lines in run file needs to contain six columns to be complete. Offending line: \"{line}\"")
                 
-                # run_entries.append(run_entry)
+                # iterator version of `run_entries.append(run_entry)`
                 yield run_entry
-                # print(f"{line}\n {qrel_entry}")
-    # return run_entries
 
 def read_rag_query_file(query_file:Path, max_queries:Optional[int]=None) -> Dict[str,str]:
     with open(query_file, 'rt') as file:
@@ -46,35 +45,6 @@ def read_rag_query_file(query_file:Path, max_queries:Optional[int]=None) -> Dict
 
 
 
-# class RagPassage(BaseModel):
-#     docid:str
-#     url:str
-#     title:str
-#     headings:str
-#     segment: str
-#     start_car:int
-#     end_char:int
-
-# def parseRagPassage(line:str) -> RagPassage:
-#     # Parse the JSON content of the line
-#     # print(line)
-#     return RagPassage.parse_raw(line)
-
-# def loadRagCorpus(file_path:Path, max_paragraphs:Optional[int]) -> List[RagPassage]:
-#     '''Load RagPassage corpus'''
-
-#     result:List[RagPassage] = list()
-#     try: 
-#         with  gzip.open(file_path, 'rt', encoding='utf-8') as file:
-#             # return [parseQueryWithFullParagraphList(line) for line in file]
-#             for line in itertools.islice(file.readlines(), max_paragraphs):
-#                 result.append(parseRagPassage(line))
-#     except  EOFError as e:
-#         print(f"Warning: File EOFError on {file_path}. Use truncated data....\nFull Error:\n{e}")
-#     return result
-
-
-
 def write_query_file(file_path:Path, queries:Dict[str,str])->None:
     with open(file_path, 'wt', encoding='utf-8') as file:
         json.dump(obj=queries,fp=file)
@@ -86,6 +56,7 @@ def convert_paragraphs(input_runs_by_qid:Dict[str,List[ParagraphRankingEntry]], 
 
     for query_id, query_str in query_set.items():
         paragraphs:List[FullParagraphData] = list()
+        print(f'Converting {len(input_runs_by_qid[query_id])} paragraphs for query {query_id}...')
         for run_entry in input_runs_by_qid[query_id]:
             rankings = [run_entry]
 
@@ -157,7 +128,6 @@ def main(cmdargs=None):
 
     # Fetch the qrels file  ... and munge
     input_run_data = read_rag_run_file(run_in_files=args.input_run_path)
-    # input_query_ids = {q.queryId  for q in input_run_data}
     input_runs_by_qid:Dict[str,List[ParagraphRankingEntry]] = defaultdict(list)
     for run_entry in input_run_data:
         input_runs_by_qid[run_entry.queryId].append(run_entry)
@@ -169,12 +139,9 @@ def main(cmdargs=None):
     query_set = {qid:qstr  for qid,qstr in query_set.items() if qid in input_query_ids}
     write_query_file(file_path=args.query_out, queries=query_set)
 
-    # print(f"query_set = {query_set}")
+    print(f"query_set = {query_set.keys()}")
 
-    # load the paragraph data
-    # instead of loading the corpus in a dictionary, we first build a duckdb
-    # corpus = loadRagCorpus(file_path = args.rag_corpus, max_paragraphs = args.max_paragraphs)
-    # corpus_by_para_id = {para.docid: para  for para in corpus}
+    # load the paragraph data from duckdb
     corpus_db = segment_index.SegmentIndex(args.rag_corpus_db) # load duckdb
 
     
@@ -185,8 +152,9 @@ def main(cmdargs=None):
  
 
     writeQueryWithFullParagraphs(file_path=args.rubric_out_file, queryWithFullParagraphList=rubric_data)
-
+    print(f'Rubric paragraph data written to {args.rubric_out_file}')
 
 
 if __name__ == "__main__":
     main()
+
