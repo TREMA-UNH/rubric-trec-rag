@@ -35,9 +35,10 @@ Place data in following locations
     python -O -m rubric_trec_rag.rag_retrieval_inputs --query-path topics.rag24.test.txt --query-out queries-rag24.json  -p rubric-rag-retrieval.jsonl.gz  --rag-corpus-db msmarco.duckdb   retrieval/*
 ```
 
-3. Convert generation-run data to input files for RUBRIC
-
-   (Todo)
+3. Convert generation-run data (example: elect-fifth.gz) to input files for RUBRIC
+```
+    python -O -m rubric_trec_rag.convert_trec_rag_output convert data/trec/elect-fifth.gz -o data/trec/elect-fifth-rubric.gz /*
+```
 
 ### Rubric generation, grading, relevance label prediction
 
