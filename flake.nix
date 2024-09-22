@@ -14,10 +14,11 @@
         mkShell = target: (dspy-nix.lib.${system}.mkShell {
           inherit target;
           pythonOverrides = [ exampp.lib.${system}.pythonOverrides ];
-          packages = ps: [ ps.exampp ps.scikit-learn ps.mypy ps.pylatex ];
+          packages = ps: [ ps.exampp ps.scikit-learn ps.mypy ps.pylatex ps.duckdb ];
         });
 
       in {
+        packages.duckdb = pkgs.duckdb;
         packages.exampp = (pkgs.python3.override {packageOverrides = exampp.lib.${system}.pythonOverrides;}).pkgs.exampp;
         devShells.default = self.outputs.devShells.${system}.cuda;
         devShells.cpu = mkShell "cpu";
