@@ -66,7 +66,7 @@ def convert_paragraphs(input_runs_by_qid:Dict[str,List[ParagraphRankingEntry]], 
 
             para_text = corpus_db.lookup(paragraph_id)
             if para_text is None:
-                raise RuntimeError(f"docid {paragraph_id} not found in RAG corpus")
+                raise RuntimeError(f"docid {paragraph_id} not found in RAG corpus. Caused by run_entry: \n{run_entry}")
             rubric_paragraph= FullParagraphData( paragraph_id= paragraph_id
                                                , text= para_text
                                                , paragraph=None
