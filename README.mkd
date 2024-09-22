@@ -27,13 +27,13 @@ Place data in following locations
 ### Convert input data to RUBRIC format
 
 1. Index TREC RAG corpus with duckdb 
-
+```
     python -O -m rubric_trec_rag.build_rag_segment_index --out msmarco.duckdb  ./msmarco_v2.1_doc_segmented/msmarco_v2.1_doc_segmented_*.json.gz 
-
+```
 2. Convert retieval-run data to input files for RUBRIC
-
+```
     python -O -m rubric_trec_rag.rag_retrieval_inputs --query-path topics.rag24.test.txt --query-out queries-rag24.json  -p rubric-rag-retrieval.jsonl.gz  --rag-corpus-db msmarco.duckdb   retrieval/*
-
+```
 
 3. Convert generation-run data to input files for RUBRIC
 
