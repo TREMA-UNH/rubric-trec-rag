@@ -57,13 +57,17 @@ def convert_paragraphs(input_runs_by_qid:Dict[str,List[ParagraphRankingEntry]], 
     for query_id, query_str in query_set.items():
         paragraphs:List[FullParagraphData] = list()
         print(f'Converting {len(input_runs_by_qid[query_id])} paragraphs for query {query_id}...')
+        grouped_entries = defaultdict(list)
         for run_entry in input_runs_by_qid[query_id]:
-            rankings = [run_entry]
+            grouped_entries[run_entry.paragraphId].append(run_entry)
+            
+        for paragraph_id, run_entries in grouped_entries.items():
+            rankings = run_entries
 
-            para_text = corpus_db.lookup(run_entry.paragraphId)
+            para_text = corpus_db.lookup(paragraph_id)
             if para_text is None:
-                raise RuntimeError(f"docid {run_entry.paragraphId} not found in RAG corpus")
-            rubric_paragraph= FullParagraphData( paragraph_id= run_entry.paragraphId
+                raise RuntimeError(f"docid {paragraph_id} not found in RAG corpus")
+            rubric_paragraph= FullParagraphData( paragraph_id= paragraph_id
                                                , text= para_text
                                                , paragraph=None
                                                , paragraph_data=ParagraphData(judgments=list(), rankings=rankings)
@@ -152,7 +156,7 @@ def main(cmdargs=None):
  
 
     writeQueryWithFullParagraphs(file_path=args.rubric_out_file, queryWithFullParagraphList=rubric_data)
-    print(f'Rubric paragraph data written to {args.rubric_out_file}')
+    print(f'Rubric paragraph data written to {args.rubric_out_file}/')
 
 
 if __name__ == "__main__":
