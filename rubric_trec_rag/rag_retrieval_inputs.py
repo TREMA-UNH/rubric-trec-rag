@@ -1,14 +1,12 @@
 from collections import defaultdict
-import gzip
 import itertools
 import json
 from pathlib import Path
 from typing import Dict, List, Optional, Iterator, Set
-from pydantic import BaseModel
 
-from exam_pp import query_loader, data_model
-# from exam_pp.exam_to_qrels import QrelEntry 
-from exam_pp.data_model import *
+
+
+from exam_pp.data_model import FullParagraphData, ParagraphData, ParagraphRankingEntry, QueryWithFullParagraphList, writeQueryWithFullParagraphs
 from . import segment_index
 
 
