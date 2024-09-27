@@ -83,7 +83,8 @@ withrate="questions-rate--${ungraded}"
 withrateextract="questions-explain--${withrate}"
 
 
-time python -O -m exam_pp.exam_grading $DATA/$ungraded -o $DATA/$withrate --model-pipeline text2text --model-name google/flan-t5-large --prompt-class QuestionSelfRatedUnanswerablePromptWithChoices --question-path $DATA/rag24-questions.jsonl.gz  --question-type question-bank
+time python -O -m exam_pp.exam_grading $DATA/$ungraded -o $DATA/$withrate --model-pipeline text2text --model-name google/flan-t5-large --prompt-class QuestionSelfRatedUnanswerablePromptWithChoices --question-path $DATA/rag24-questions.jsonl.gz  --question-type question-bank --restart-paragraphs-file data/questions-rate--rubric-rag24-retrieval--1.jsonl.gz
+
 
 
 
