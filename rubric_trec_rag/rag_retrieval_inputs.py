@@ -154,7 +154,7 @@ def main(cmdargs=None):
  
 
     writeQueryWithFullParagraphs(file_path=args.rubric_out_file, queryWithFullParagraphList=rubric_data)
-    print(f'Rubric paragraph data written to {args.rubric_out_file}/')
+    print(f'Rubric paragraph data written to {args.rubric_out_file}')
 
 
 if __name__ == "__main__":
