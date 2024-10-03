@@ -124,11 +124,11 @@
         "nixpkgs": "nixpkgs"
       },
       "locked": {
-        "lastModified": 1727469502,
-        "narHash": "sha256-agyViISkPTRL8TXEXG7lNFwK1QK8JUVgEDn1Lx0b7YA=",
+        "lastModified": 1727470175,
+        "narHash": "sha256-zRSqRJ8BcCkZ37Pn5eYPe7/z7g4YZUyHfEmeLSD3vxY=",
         "ref": "refs/heads/master",
-        "rev": "ccc0e8458df8bf7a6039cfbad6a93b47d0fc11cd",
-        "revCount": 35,
+        "rev": "b62411eeed813f98afd53ba357d146dc29d3e051",
+        "revCount": 37,
         "type": "git",
         "url": "https://git.smart-cactus.org/ben/dspy-nix"
       },
@@ -147,11 +147,11 @@
         "nixpkgs": "nixpkgs_2"
       },
       "locked": {
-        "lastModified": 1706982278,
-        "narHash": "sha256-1voXA0Fpddicvjl4b8YHVaeql/sVY9mrwp09N9GSeY8=",
+        "lastModified": 1727469502,
+        "narHash": "sha256-agyViISkPTRL8TXEXG7lNFwK1QK8JUVgEDn1Lx0b7YA=",
         "ref": "refs/heads/master",
-        "rev": "8c2916311bed43ac97b0f8bc3cfc8b96b1f3a0da",
-        "revCount": 33,
+        "rev": "ccc0e8458df8bf7a6039cfbad6a93b47d0fc11cd",
+        "revCount": 35,
         "type": "git",
         "url": "https://git.smart-cactus.org/ben/dspy-nix"
       },
@@ -183,11 +183,11 @@
         "nixpkgs": "nixpkgs_3"
       },
       "locked": {
-        "lastModified": 1719783097,
-        "narHash": "sha256-vywOoUQuk7r/ix7QaZ13TvXhjKzNyT+wN1n0m+4PpeM=",
+        "lastModified": 1727973656,
+        "narHash": "sha256-0NxJk/Kyd09g7T5uD554Rkh3lbeYrzCv3PL0VpRuGjs=",
         "ref": "refs/heads/master",
-        "rev": "0b690c629dba28d667612b27faa7e0cec51bc8ae",
-        "revCount": 245,
+        "rev": "9b5126783a62532da1c734c661ab2d97d20d2cbe",
+        "revCount": 268,
         "type": "git",
         "url": "ssh://git@git.smart-cactus.org/ben/exampp.git"
       },
@@ -255,11 +255,11 @@
         "systems": "systems_4"
       },
       "locked": {
-        "lastModified": 1710146030,
-        "narHash": "sha256-SZ5L6eA7HJ/nmkzGG7/ISclqe6oZdOZTNoesiInkXPQ=",
+        "lastModified": 1726560853,
+        "narHash": "sha256-X6rJYSESBVr3hBoH0WbKE5KvhPU5bloyZ2L4K60/fPQ=",
         "owner": "numtide",
         "repo": "flake-utils",
-        "rev": "b1d9ab70662946ef0850d488da1c9019f3a9752a",
+        "rev": "c1dfcf08411b08f6b8615f7d8971a2bfa81d5e8a",
         "type": "github"
       },
       "original": {
@@ -316,11 +316,11 @@
     },
     "nixpkgs_4": {
       "locked": {
-        "lastModified": 1719426051,
-        "narHash": "sha256-yJL9VYQhaRM7xs0M867ZFxwaONB9T2Q4LnGo1WovuR4=",
+        "lastModified": 1727672256,
+        "narHash": "sha256-9/79hjQc9+xyH+QxeMcRsA6hDyw6Z9Eo1/oxjvwirLk=",
         "owner": "nixos",
         "repo": "nixpkgs",
-        "rev": "89c49874fb15f4124bf71ca5f42a04f2ee5825fd",
+        "rev": "1719f27dd95fd4206afb9cec9f415b539978827e",
         "type": "github"
       },
       "original": {
