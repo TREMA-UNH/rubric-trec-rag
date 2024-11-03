@@ -183,17 +183,17 @@
         "nixpkgs": "nixpkgs_3"
       },
       "locked": {
-        "lastModified": 1729365455,
+        "lastModified": 1730677613,
         "narHash": "sha256-8T5nmykztMWVzZP88OrQ+7SAsKc4Vd8rUK+62f9kqjQ=",
-        "ref": "refs/heads/master",
-        "rev": "67a1437fa9271234116a7b4c04d474157212367a",
-        "revCount": 277,
+        "ref": "refs/heads/main",
+        "rev": "554d2d49f854c0c1ebaf76b40c7c564ea0d56e72",
+        "revCount": 278,
         "type": "git",
-        "url": "ssh://git@git.smart-cactus.org/ben/exampp.git"
+        "url": "https://github.com/TREMA-UNH/rubric-grading-workbench.git"
       },
       "original": {
         "type": "git",
-        "url": "ssh://git@git.smart-cactus.org/ben/exampp.git"
+        "url": "https://github.com/TREMA-UNH/rubric-grading-workbench.git"
       }
     },
     "flake-utils": {
