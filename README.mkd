@@ -6,12 +6,20 @@ Research papers on the topic: <https://www.cs.unh.edu/~dietz/publications/index.
 
 More info about the TREC RAG track: <https://trec-rag.github.io/annoucements/2024-track-guidelines/>
 
+
+RUBRIC Evaluation Result Data for TREC RAG 24 is provided on <https://trec-car.cs.unh.edu/rubric-trec-rag24/>
+
+
 ## Installation with Nix
 
-Set up the NIX environment, including the RUBRIC code from the Autograder Workbench
+Set up the NIX environment, including the RUBRIC code from the Autograder Workbench (Also see section `Nix Trouble Shooting` below)
 
     nix develop
 
+
+## Data Conversion and Grading
+
+### Obtain Data
 
 Get the TREC RAG data: <https://trec-rag.github.io>
 
@@ -22,7 +30,6 @@ Place data in following locations
    * `msmarco_v2.1_doc_segmented.tar` rag corpus (untar and index with duckdb)
 
 
-## Usage
 
 ### Convert input data to RUBRIC format
 
@@ -30,7 +37,7 @@ Place data in following locations
 ```
     python -O -m rubric_trec_rag.build_rag_segment_index --out msmarco.duckdb  ./msmarco_v2.1_doc_segmented/msmarco_v2.1_doc_segmented_*.json.gz 
 ```
-2. Convert retieval-run data to input files for RUBRIC
+2. Convert retrieval-run data to input files for RUBRIC
 ```
     python -O -m rubric_trec_rag.rag_retrieval_inputs --query-path topics.rag24.test.txt --query-out queries-rag24.json  -p rubric-rag-retrieval.jsonl.gz  --rag-corpus-db msmarco.duckdb   retrieval/*
 ```
@@ -46,5 +53,62 @@ Place data in following locations
 
     bash rubric-generation-rag24.sh
 
+2. Run LLM-grading on `ungraded` input data (here: example for retrieval task)
 
+    python -O -m exam_pp.exam_grading data/rubric-rag-retrieval.jsonl.gz -o data/questions-rate--rubric-rag24-retrieval.jsonl.gz  --model-name google/flan-t5-large --model-pipeline text2text --prompt-class QuestionSelfRatedUnanswerablePromptWithChoices --q
+uestion-path data/rag24-questions.jsonl.gz  --question-type question-bank
+
+
+To obtain explanations for FLAN-T5-grades use the prompt class `QuestionCompleteConciseUnanswerablePrompt`.
+
+To use keyphrase-style nuggets instead of questions use the `NuggetSelfRatedPrompt`.
+
+We highly recommend against obtaining grades with llama3 (out-of-the-box), however, if you insist, here is how: change `--model-name` to llama3 huggingface model (e.g., `meta-llama/Meta-Llama-3-8B-Instruct`) and `--model-pipeline` to `llama`
+
+
+
+## Jupyter Notebooks for Result Analysis
+
+1. Start nix environment with `nix develop` (If not already done so) 
+2. Download rubric grade files from <https://trec-car.cs.unh.edu/rubric-trec-rag24/> and place in directory `./data/`
+3. Start the notebook environment with `jupyter notebook`
+4. Open one of the `rubric-rag-results-*.ipynb` notebooks in browser
+5. Run all cells in the notebook
+6. At the end of the notebook one tar.gz archive is produced with qrels, runs, run-measure-query-value exports, leaderboard in TSV, and plots
+
+Result Data is provided on <https://trec-car.cs.unh.edu/rubric-trec-rag24/>
+
+
+# Nix Trouble Shooting
+
+
+If you are getting error message about unfree packages or experimental command, then run one of these longer commands instead
+
+* `nix --extra-experimental-features 'nix-command flakes' develop` 
+* `NIXPKGS_ALLOW_UNFREE=1 nix --extra-experimental-features 'nix-command flakes' develop --impure`
+
+
+### Use Cachix
+
+We recommend the use of Cachix to avoid re-compiling basic dependencies. For that just respond "yes" when asked the following:
+
+```
+do you want to allow configuration setting 'substituters' to be set to 'https://dspy-nix.cachix.org' (y/N)? y
+do you want to permanently mark this value as trusted (y/N)? y
+```
+
+
+### Trusted user issue
+
+If you get error messages indicating that you are not a "trusted user", such as the following
+
+```
+warning: ignoring untrusted substituter 'https://dspy-nix.cachix.org', you are not a trusted user.
+```
+
+Then ask your administrator to edit the nix config file (`/etc/nix/nix.conf`) and add your username or group to the trusted user list as follows: `trusted-users = root $username @$group`.
+
+
+
+[install-nix]: https://nix.dev/install-nix
 
