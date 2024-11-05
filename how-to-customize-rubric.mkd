@@ -1,0 +1,143 @@
+# HOW TO RUBRIC!
+
+
+To get everyone started on how to run and customize our RUBRIC Autograder Workbench, I would like to walk you through the "alternative" Evaluation we are providing for TREC RAG '24. Below I give a range of usage examples that would be relevant for this project.
+
+
+
+1. Here an excerpt from our TREC Notebook draft that focuses on the evaluation. 
+
+<https://trec-car.cs.unh.edu/rubric-trec-rag24/TREMA-UNH-Rubric-eval-for-TREC-RAG-24.pdf>
+
+This gives a quick summary of how the workbench works with some insights gleaned. It also sets the stage for the code examples we share below.
+
+
+
+2. Git repository with the Autograder Workbench Code which contains the implementation for all methods in our EXAM++ workshop paper and the "Pencils Down!" paper at ICTIR.  Note RUBRIC and EXAM++ are two names for exactly the same thing.  Whether you use open-ended questions or multiple-choice questions only depends on which Prompt Class and exam question bank you are using.
+
+https://github.com/TREMA-UNH/rubric-grading-workbench
+
+
+3. Git repository with customizations of the Autograder Workbench for TREC RAG  (like input data wrangling and jupyter notebooks)
+
+https://github.com/TREMA-UNH/rubric-trec-rag
+
+
+4. Results and Data files for repeating this analysis: https://trec-car.cs.unh.edu/rubric-trec-rag24/
+
+
+
+Note, we use the `nix` build system for our work, because it ensures reproducibility of our work (including all third-party versions).  Since our code is 100% python it is also possible to use other systems. But we don't have reliable pyproject toml files, so we might have to work together to get you set up. Its easier for us if you can use `nix`
+
+**How to use:**
+
+1. Check out https://github.com/TREMA-UNH/rubric-trec-rag
+2. Install the nix package manager from nixos.org (install nix package, not the OS!)
+
+3. from the rubric-trec-rag directory call nix develop to create the python environment (more instructions in the repository's README file)
+
+This setups up the python environment with all dependencies, including the rubric-autograder workbench, dspy-nix.
+
+
+From this environment you can run both autograder-workbench commands or bring up the jupyter notebook server to run our result analysis. You can also write you own python code and just import the `exampp` package.
+
+
+## Example "Run the grading phase from command line"
+
+
+export GPU_DEVICE=0   // or "None" for CPU
+export BATCH_SIZE=10   // or A40
+
+python -O -m exam_pp.exam_grading $DATA/$ungraded -o $DATA/$withrate --model-pipeline text2text --model-name google/flan-t5-large --prompt-class QuestionSelfRatedUnanswerablePromptWithChoices --question-path $DATA/rag24-questions.jsonl.gz  --question-type question-bank
+
+Alternative prompts classes are
+
+    NuggetSelfRatedPrompt: self-rating of nugget mentions (enable --use-nuggets)
+    NuggetExtractionPrompt: extraction of nugget mentioned, for explaination and verification (to be used with use-nuggets)
+    QuestionSelfRatedUnanswerablePromptWithChoices: self-rating answerability of exam questions
+    QuestionCompleteConcisePromptWithAnswerKey2: extract answers for exam questions (informational or for test banks with known correct answers)
+    FagB,FagB_few, HELM, Sun, Sun_few, Thomas: Direct grading prompts.
+
+
+Example "I want to use a different LLM for grading"
+
+Change  --model-name google/flan-t5-large  --model-pipeline text2text
+
+to the huggingface model you want to use (along with the right huggingface pipeline that the model supports)
+
+We also support llama3, for which we provide the `llama` pipeline. But it just does not do my bidding reliably.
+
+
+## Example "Convert RAG submission format to Rubric inputs"
+
+See source code: https://github.com/TREMA-UNH/rubric-trec-rag/blob/main/rubric_trec_rag/rag_generation_inputs.py
+
+Place all submission files in `./data/gen/`, then run with
+
+    python -O -m rubric_trec_rag.rag_generation_inputs  -p ./data/rubric-rag24-gen.jsonl.gz  ./data/gen/*
+
+
+Example "Read off grades, predict relevance labels, and produce leaderboards"
+
+See example in jupyter notebook: https://github.com/TREMA-UNH/rubric-trec-rag/blob/main/rubric-rag-results-gen.ipynb
+
+
+## Example "Use our own EXAM question-bank"
+
+You will need to create a question-bank file, which is then passed to the grading stage in the `--question-path` argument.
+
+Here an example: https://github.com/TREMA-UNH/rubric-trec-rag/blob/main/data/rag24-questions.jsonl.gz
+
+
+The function that will be used to load a question-bank is here:
+
+ https://github.com/TREMA-UNH/rubric-grading-workbench/blob/main/exam_pp/question_bank_loader.py#L71
+
+
+While you can use your own code to write jsonl and gzip compress it, we recommend that you use our pydantic code and serialization functions.
+
+For every query/topic you will need to create a QueryQuestionBank, which carries a list of ExamQuestion objects (provided in exampp.question_bank_loader). These are serialized in the proper jsonl.gz format with `writeTestBank`
+
+```
+class ExamQuestion(TestPoint):
+    question_id: str
+    question_text: str
+    gold_answers: Optional[Set[str]]
+
+
+class QueryTestBank(BaseModel, Generic[T]):
+    query_id: str
+    facet_id: Optional[str]
+    facet_text: Optional[str]
+    test_collection: str
+    query_text: str
+    info: Optional[Any]
+    # items: List[T]
+
+class QueryQuestionBank(QueryTestBank[ExamQuestion]):
+    hash:int = 1243234 # TODO random
+    items: List[ExamQuestion]
+
+    def get_questions(self) -> List[ExamQuestion]:
+        return self.items
+
+```
+
+The ExamQuestion object has an optional set of gold answers, but I am not sure whether our current code is using them effectively.  In the EXAM++ paper we used the TQA collection  as question bank, which has its own format. You could in theory mimic the TQA json format, but I think I would rather make sure my workbench code uses it right.  (Todo for Laura)
+
+
+## Example "I want to use a different grading prompt"
+
+I am still working on changing the code to support this in an elegant way. Here is how to hack it in the meantime:
+
+Edit the  ` exampp/test_bank_prompt.py` and add a new subclass of `QuestionPrompt`
+
+https://github.com/TREMA-UNH/rubric-grading-workbench/blob/main/exam_pp/test_bank_prompts.py#L453
+
+Follow either `QuestionAnswerablePromptWithChoices` (multi-choice questions) or `QuestionSelfRatedUnanswerablePromptWithChoices` as an example.   Search for all usages of this prompt class, and add an entry referring to your PromptClass object.
+
+
+
+I hope this gets everyone started.  Let me know if you have any questions - Laura Dietz  dietz@cs.unh.edu
+
+
