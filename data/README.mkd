@@ -1,0 +1,58 @@
+# RUBRIC@ TREC RAG 24
+
+Rubric evaluation with FLAN-T5-large (we also experimented with Llama3, but found results too unreliable). Generated with
+rubric-autograder-workbench https://github.com/laura-dietz/rubric-internal and rubric-trec-rag https://github.com/TREMA-UNH/rubric-trec-rag
+
+Methods anonymized by Ian Soboroff. Rubric analysis conduced by Laura Dietz.
+
+
+Measures provided are
+
+* cover-1: RUBRIC-Cover with minimum grade level 1 (on 0--5 scale)
+* cover-4: same but minimum grade level 4
+* cover-5: same but minimum grade level 5
+* qrels-ndcg: RUBRIC-qrels with NDCG@20 metric (ndcg uses the multi-relevance levels)
+* qrels-1: RUBRIC-qrels with P@20 with a minmum grade level 1
+* qrels-4: same but minimum grade level 4
+* qrels-5: same but minimum grade level 5
+
+
+## Result Data archives
+
+Each archive contains:
+1. qrel file.
+2. run files
+3. exported run-measure-topic-value
+4. leaderboard (tsv) with mean and stdev under different measures
+5. plots
+
+
+* questions-rate--rubric-rag24-auggen.jsonl.results.tar.gz
+* questions-rate--rubric-rag24-gen.jsonl.results.tar.gz
+* questions-rate--rubric-rag24-retrieval.jsonl.results.tar.gz
+
+## Rubric Grade Files:
+
+* questions-rate--rubric-rag24-auggen.jsonl.gz
+* questions-rate--rubric-rag24-gen.jsonl.gz
+* questions-rate--rubric-rag24-retrieval.jsonl.gz
+
+Generated question-style rubric elements:
+rag24-questions.jsonl.gz
+
+## Jupyter Notebooks Result Analysis
+
+* rubric-rag-results-auggen.ipynb
+* rubric-rag-results-gen.ipynb
+* rubric-rag-results.ipynb (retrieval)
+
+## Plots
+X-axis are participating systems, sorted by qrels-ndcg performance. Any system that performed above the 85%-percentile (or 75%-percentile) is marked with a green dot, to see how many "very good systems" would be missed if a different measure would have been chosen. The analysis shows a general agreement of differnt measures on selecting the best systems. Of course, the "coverage"-based metrics that do not award redundancy in the generated passages, prefer differnt systems than "precision"-based metrics. Each of these groups strongly correlate with each other. We find that the grade threshold of 5 is only rarely assigned by the LLM, and hence not sensitive enough for comparing systems robustly. On the other hand, a cover-1 is often too lenient. 
+
+
+## License
+
+RUBRIC@ TREC RAG 24 © 2024 by Laura Dietz is licensed under Creative Commons Attribution-ShareAlike 4.0 International 
+
+ <p xmlns:cc="http://creativecommons.org/ns#" xmlns:dct="http://purl.org/dc/terms/"><a property="dct:title" rel="cc:attributionURL" href="https://trec-car.cs.unh.edu/rubric-trec-rag24/">RUBRIC@ TREC RAG 24</a> by <a rel="cc:attributionURL dct:creator" property="cc:attributionName" href="https://www.cs.unh.edu/~dietz/">Laura Dietz</a> is licensed under <a href="https://creativecommons.org/licenses/by-sa/4.0/?ref=chooser-v1" target="_blank" rel="license noopener noreferrer" style="display:inline-block;">Creative Commons Attribution-ShareAlike 4.0 International<img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/cc.svg?ref=chooser-v1" alt=""><img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/by.svg?ref=chooser-v1" alt=""><img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/sa.svg?ref=chooser-v1" alt=""></a></p> 
+
