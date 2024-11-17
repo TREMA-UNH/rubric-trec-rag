@@ -103,6 +103,40 @@ def convert_submission(rag_submission_by_qid:Dict[str,List[RagGenSubmission]])->
         rubric_data.append(QueryWithFullParagraphList(queryId=query_id, paragraphs= list(grouped_entries.values())))
     return rubric_data
 
+
+
+def convert_submission_concat_response(rag_submission_by_qid:Dict[str,List[RagGenSubmission]])-> List[QueryWithFullParagraphList]:
+    rubric_data:List[QueryWithFullParagraphList] = list()
+
+    for query_id, submission_entries in rag_submission_by_qid.items():
+        print(f'Converting {len(rag_submission_by_qid[query_id])} submissions for query {query_id}...')
+        grouped_entries: Dict[str, FullParagraphData]
+        grouped_entries = dict()
+        for submission_entry in submission_entries:
+            system_response = "\n".join([submission_passage.text for submission_passage in submission_entry.answer])
+            paragraph_id = get_md5_hash(system_response)
+            rank = 1
+            score = 1.0
+            rankingEntry = ParagraphRankingEntry(method=submission_entry.run_id
+                                                    , paragraphId=paragraph_id
+                                                    , queryId=query_id
+                                                    , rank = rank
+                                                    , score=score)
+            if paragraph_id in grouped_entries:
+                grouped_entries[paragraph_id].paragraph_data.rankings.append(rankingEntry)
+            else:
+                submittedParagraph = FullParagraphData(paragraph_id=paragraph_id
+                                                        , text=system_response
+                                                        , paragraph = None
+                                                        , paragraph_data= ParagraphData(judgments=[], rankings=[rankingEntry])
+                                                        , exam_grades=None
+                                                        , grades=None)
+                grouped_entries[paragraph_id]=submittedParagraph
+            
+
+        rubric_data.append(QueryWithFullParagraphList(queryId=query_id, paragraphs= list(grouped_entries.values())))
+    return rubric_data
+
 def main(cmdargs=None):
     """Convert TREC RAG retrieval data to inputs for EXAM/RUBRIC."""
 
@@ -130,6 +164,7 @@ def main(cmdargs=None):
     # parser.add_argument('--query-path', type=str, metavar='PATH', help='Path to read TREC RAG queries')
     parser.add_argument(dest='input_submission_path', type=Path, nargs='+', metavar='PATH', help='Path(s) to read TREC RAG submission files')
 
+    parser.add_argument('--concat-response', action='store_true', default=False, help='Concatenate all passages into a single response. (Omit and each passage will be graded as its own unit.)')
     
 
     parser.add_argument('--max-queries', type=int, metavar='INT', default=None, help='limit the number of queries that will be processed (for debugging)')
@@ -154,7 +189,11 @@ def main(cmdargs=None):
 
     # now emit the input files for RUBRIC/EXAM
     rubric_data:List[QueryWithFullParagraphList] 
-    rubric_data = convert_submission(rag_submission_by_qid=rag_submissions_by_qid)
+
+    if args.concat_response:
+        rubric_data = convert_submission_concat_response(rag_submission_by_qid=rag_submissions_by_qid)
+    else:
+        rubric_data = convert_submission(rag_submission_by_qid=rag_submissions_by_qid)
  
 
     writeQueryWithFullParagraphs(file_path=args.rubric_out_file, queryWithFullParagraphList=rubric_data)
