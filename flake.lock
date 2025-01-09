@@ -95,17 +95,17 @@
         "nixpkgs": "nixpkgs_2"
       },
       "locked": {
-        "lastModified": 1730679784,
-        "narHash": "sha256-8T5nmykztMWVzZP88OrQ+7SAsKc4Vd8rUK+62f9kqjQ=",
+        "lastModified": 1736379464,
+        "narHash": "sha256-tvUyqOlJvyXU2tFQnG+wIAwni9jEgSNW+6yHcvvMPlY=",
         "ref": "refs/heads/main",
-        "rev": "cf691926ddf3408375af5d9494091344cd159218",
-        "revCount": 283,
+        "rev": "497b18f5e2d65d8a49db1350c64f5a7f2bb4b3dd",
+        "revCount": 360,
         "type": "git",
-        "url": "https://github.com/TREMA-UNH/rubric-grading-workbench.git"
+        "url": "https://github.com/laura-dietz/rubric-internal"
       },
       "original": {
         "type": "git",
-        "url": "https://github.com/TREMA-UNH/rubric-grading-workbench.git"
+        "url": "https://github.com/laura-dietz/rubric-internal"
       }
     },
     "flake-utils": {
