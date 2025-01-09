@@ -16,6 +16,9 @@ Set up the NIX environment, including the RUBRIC code from the Autograder Workbe
 
     nix develop
 
+or, as a workaround to enable nix' new features:
+
+    NIXPKGS_ALLOW_UNFREE=1 nix --extra-experimental-features 'nix-command flakes' develop --impure
 
 ## Data Conversion and Grading
 
