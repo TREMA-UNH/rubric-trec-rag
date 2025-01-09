@@ -2,6 +2,7 @@
   description = "rubric-trec-rag";
 
   inputs.nixpkgs.url = "github:nixos/nixpkgs/nixos-24.05";
+  inputs.nixpkgs.follows = "exampp/nixpkgs";
   inputs.flake-utils.url = "github:numtide/flake-utils";
   inputs.dspy-nix.url = "git+https://git.smart-cactus.org/ben/dspy-nix";
   inputs.dspy-nix.follows = "exampp/dspy-nix";
@@ -9,9 +10,8 @@
   # inputs.exampp.url = "git+ssh://git@git.smart-cactus.org/ben/exampp.git";
   inputs.exampp.url = "git+https://github.com/laura-dietz/rubric-internal";
 
- 
   outputs = inputs@{ self, nixpkgs, flake-utils, dspy-nix, exampp, ... }:
-    flake-utils.lib.eachDefaultSystem (system: 
+    flake-utils.lib.eachDefaultSystem (system:
       let
         pkgs = nixpkgs.legacyPackages.${system};
 
@@ -20,7 +20,7 @@
           pythonOverrides = [
             exampp.lib.${system}.pythonOverrides
           ];
-          packages = ps: [ ps.exampp ps.scikit-learn ps.mypy ps.pylatex ps.duckdb ];
+          pythonPackages = ps: [ ps.exampp ps.scikit-learn ps.mypy ps.pylatex ps.duckdb ];
         });
 
       in {
